@@ -8,7 +8,7 @@
     "commands/*",
     "lib/**/*.js",
     "package.json",
-    "README.md",
+    "README.md"
   ],
   "bin": {
     "ispwatch": "bin/daemon.js"
@@ -38,6 +38,7 @@
     "@buzuli/json": "^2.2.0",
     "@buzuli/meter": "^1.4.0",
     "@buzuli/throttle": "^2.0.2",
+    "durations": "^3.4.2",
     "log-a-log": "^7.0.0",
     "ws": "^7.5.10",
     "yargs": "^17.7.2"

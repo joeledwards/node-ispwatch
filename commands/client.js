@@ -1,5 +1,7 @@
 const logalog = require('log-a-log')
 const WebSocket = require('ws')
+const { Exchange } = require('../lib/exchange.js')
+const { PingPong } = require('../lib/ping.js')
 
 function builder (yarg) {
   yarg
@@ -22,15 +24,6 @@ function parseAddress (addressString) {
   }
 }
 
-function sendMessage ({ ws, msg }) {
-  if (ws.readyState === WebSocket.OPEN) {
-    console.info(`Sending message "${msg}"`)
-    ws.send(msg)
-  } else {
-    console.info('Connection is down. Cannot send message.')
-  }
-}
-
 async function handler ({
   serverAddress,
   secure,
@@ -46,30 +39,8 @@ async function handler ({
 
   const ws = new WebSocket(url)
 
-  ws.on('open', () => {
-    console.info('Connected.')
-  })
-
-  ws.on('message', msg => {
-    console.info(`Received message: ${msg}`)
-
-    if (msg === 'PING') {
-      sendMessage({ ws,  msg: 'PONG' })
-    }
-  })
-
-  const pingInterval = setInterval(() => {
-    sendMessage({ ws, msg: 'PING' })
-  }, 1000)
-
-  ws.on('close', () => {
-    console.info('Disconnected.')
-    clearInterval(pingInterval)
-  })
-
-  ws.on('error', error => {
-    console.error('Websocket error:', error.message)
-  })
+  const exchange = new Exchange(ws)
+  exchange.run()
 }
 
 module.exports = {
