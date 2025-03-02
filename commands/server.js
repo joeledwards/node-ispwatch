@@ -5,14 +5,20 @@ const { PingPong } = require('../lib/ping.js')
 
 function builder (yarg) {
   yarg
+    .env("ISPWATCH")
     .option('bind-port', {
       type: 'number',
       desc: 'TCP port to which the server should bind',
       default: 29873,
     })
+    .option('auth-key', {
+      type: 'string',
+      desc: 'If specified, every clients must supply this in its first message to the server, or be disconnected',
+    })
 }
 
 async function handler ({
+  authKey,
   bindPort,
 } = {}) {
   logalog()
@@ -25,7 +31,7 @@ async function handler ({
     const clientIp = req.socket.remoteAddress
     console.info(`Client connected: ${clientIp}`)
 
-    const exchange = new Exchange(ws)
+    const exchange = new Exchange({ ws, isServer: true , authKey })
     exchange.run()
   })
 }

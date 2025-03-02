@@ -5,6 +5,7 @@ const { PingPong } = require('../lib/ping.js')
 
 function builder (yarg) {
   yarg
+    .env("ISPWATCH")
     .positional('server-address', {
       type: 'string',
       desc: 'The address (<host>:<port>) of the server',
@@ -12,6 +13,10 @@ function builder (yarg) {
     .option('secure', {
       type: 'boolean',
       desc: 'Connect using TLS',
+    })
+    .option('auth-key', {
+      type: 'string',
+      desc: 'If specified, send this to the server immediately after connecting to authenticate',
     })
 }
 
@@ -25,6 +30,7 @@ function parseAddress (addressString) {
 }
 
 async function handler ({
+  authKey,
   serverAddress,
   secure,
 } = {}) {
@@ -39,7 +45,7 @@ async function handler ({
 
   const ws = new WebSocket(url)
 
-  const exchange = new Exchange(ws)
+  const exchange = new Exchange({ ws, isServer: false, authKey })
   exchange.run()
 }
 
