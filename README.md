@@ -47,3 +47,10 @@ can be performed. Should default to hourly and can be capped. Sometimes
 you don't care what the total capacity is, just that a minimum is
 being met.
 
+## Auth
+
+The `--auth-key` CLI option or `ISPWATCH_AUTH_KEY` environment variable can be used to
+supply an auth key to the daemon (either the client or the server).
+
+If the server has an auth key configured, it will require the client to use that key
+to authenticate as its first action, otherwise the client will be disconnected.
