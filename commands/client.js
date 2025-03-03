@@ -6,13 +6,9 @@ const { PingPong } = require('../lib/ping.js')
 function builder (yarg) {
   yarg
     .env("ISPWATCH")
-    .positional('server-address', {
+    .positional('server-url', {
       type: 'string',
-      desc: 'The address (<host>:<port>) of the server',
-    })
-    .option('secure', {
-      type: 'boolean',
-      desc: 'Connect using TLS',
+      desc: 'The URL of the server (e.g. ws://localhost:29873)',
     })
     .option('auth-key', {
       type: 'string',
@@ -20,26 +16,11 @@ function builder (yarg) {
     })
 }
 
-function parseAddress (addressString) {
-  const [host, port] = addressString.split(':', 2)
-
-  return {
-    host,
-    port: Number(port),
-  }
-}
-
 async function handler ({
   authKey,
-  serverAddress,
-  secure,
+  serverUrl: url,
 } = {}) {
   logalog()
-
-  const { host, port } = parseAddress(serverAddress)
-
-  const scheme = secure ? 'wss' : 'ws'
-  const url = `${scheme}://${host}:${port}`
 
   console.info(`Connecting to server at ${url} ...`)
 
@@ -50,7 +31,7 @@ async function handler ({
 }
 
 module.exports = {
-  command: 'client <server-address>',
+  command: 'client <server-url>',
   desc: 'Run an ISP Watch client',
   builder,
   handler,

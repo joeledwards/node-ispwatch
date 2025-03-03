@@ -47,6 +47,36 @@ can be performed. Should default to hourly and can be capped. Sometimes
 you don't care what the total capacity is, just that a minimum is
 being met.
 
+## Server
+
+To run the server:
+
+```shell
+./bin/daemon.js server
+```
+
+The default bind port is `29873`
+
+To enable auth, you can set the auth key via the `--auth-key` CLI option or the
+`ISPWATCH_AUTH_KEY` environment variable.
+
+## Client
+
+To run the client:
+
+```shell
+./bin/daemon.js client <server-url>
+```
+
+For example, to connect to a server run locally with the default bind port:
+
+```shell
+./bin/daemon client ws://localhost:29873
+```
+
+If the server has auth enabled, you can configure the auth key via the `--auth-key` CLI 
+option or the `ISPWATCH_AUTH_KEY` environment variable.
+
 ## Auth
 
 The `--auth-key` CLI option or `ISPWATCH_AUTH_KEY` environment variable can be used to
