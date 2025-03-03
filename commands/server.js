@@ -1,27 +1,32 @@
-const logalog = require('log-a-log')
 const WebSocket = require('ws')
 const { Exchange } = require('../lib/exchange.js')
-const { PingPong } = require('../lib/ping.js')
+const { configureLogger } = require('../lib/logging.js')
 
 function builder (yarg) {
   yarg
     .env("ISPWATCH")
+    .option('auth-key', {
+      type: 'string',
+      desc: 'If specified, every clients must supply this in its first message to the server, or be disconnected',
+    })
     .option('bind-port', {
       type: 'number',
       desc: 'TCP port to which the server should bind',
       default: 29873,
     })
-    .option('auth-key', {
+    .option('log-level', {
       type: 'string',
-      desc: 'If specified, every clients must supply this in its first message to the server, or be disconnected',
+      choices: ['off', 'error', 'warn', 'info', 'verbose'],
+      default: 'info',
     })
 }
 
 async function handler ({
   authKey,
   bindPort,
+  logLevel,
 } = {}) {
-  logalog()
+  configureLogger({ logLevel })
 
   console.info(`Running WebSocket server on port ${bindPort}`)
 

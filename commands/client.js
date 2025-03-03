@@ -1,7 +1,7 @@
 const logalog = require('log-a-log')
 const WebSocket = require('ws')
 const { Exchange } = require('../lib/exchange.js')
-const { PingPong } = require('../lib/ping.js')
+const { configureLogger } = require('../lib/logging.js')
 
 function builder (yarg) {
   yarg
@@ -14,13 +14,19 @@ function builder (yarg) {
       type: 'string',
       desc: 'If specified, send this to the server immediately after connecting to authenticate',
     })
+    .option('log-level', {
+      type: 'string',
+      choices: ['off', 'error', 'warn', 'info', 'verbose'],
+      default: 'warn',
+    })
 }
 
 async function handler ({
   authKey,
   serverUrl: url,
+  logLevel,
 } = {}) {
-  logalog()
+  configureLogger({ logLevel })
 
   console.info(`Connecting to server at ${url} ...`)
 
