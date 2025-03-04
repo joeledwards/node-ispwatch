@@ -30,13 +30,21 @@ async function handler ({
 
   console.info(`Running WebSocket server on port ${bindPort}`)
 
-  const server = new WebSocket.Server({ port: bindPort })
+  let nextConnectionId = 0
+
+  const server = new WebSocket.Server({
+    port: bindPort,
+
+    // We need to keep the original size as the intent is to test link performance.
+    perMessageDeflate: false,
+  })
 
   server.on('connection', (ws, req) => {
+    const id = nextConnectionId++
     const clientIp = req.socket.remoteAddress
     console.info(`Client connected: ${clientIp}`)
 
-    const exchange = new Exchange({ ws, isServer: true , authKey })
+    const exchange = new Exchange({ ws, isServer: true , authKey, id })
     exchange.run()
   })
 }
