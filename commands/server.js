@@ -19,12 +19,17 @@ function builder (yarg) {
       choices: ['off', 'error', 'warn', 'info', 'verbose'],
       default: 'info',
     })
+    .option('max-payload-bytes', {
+      type: 'number',
+      default: 2 * 1024 * 1024,
+    })
 }
 
 async function handler ({
   authKey,
   bindPort,
   logLevel,
+  maxPayloadBytes
 } = {}) {
   configureLogger({ logLevel })
 
@@ -37,6 +42,9 @@ async function handler ({
 
     // We need to keep the original size as the intent is to test link performance.
     perMessageDeflate: false,
+
+    // Cap the payload so we have at least some protection against DoS attacks
+    maxPayload: maxPayloadBytes,
   })
 
   server.on('connection', (ws, req) => {
